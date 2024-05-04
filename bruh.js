@@ -1,3 +1,12 @@
-javascript: void(
-    open('https://chart.apis.google.com/chart?cht=qr&chs=300x300&chld=L|2&chl=' + encodeURIComponent(location.href), null, 'location=no,status=yes,menubar=no,scrollbars=no,resizable=yes,width=500,height=500,modal=yes,dependent=yes')
-);
+window.addEventListener("keyup", event => {
+  if (event.ctrlKey && event.key === '`') { // Replace '`' with the key of your choice
+    (function(){
+      var script = document.createElement("script");
+      script.src = "https://x-ray-goggles.mouse.org/webxray.js";
+      script.className = "webxray";
+      script.setAttribute("data-lang", "en-US");
+      script.setAttribute("data-baseuri", "https://x-ray-goggles.mouse.org");
+      document.body.appendChild(script);
+    })();
+  }
+});
