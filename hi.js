@@ -1,12 +1,14 @@
-window.addEventListener("keyup", event => {
-  if (event.ctrlKey && event.key === '`') { // Replace '`' with the key of your choice
-    (function(){
-      var script = document.createElement("script");
-      script.src = "https://x-ray-goggles.mouse.org/webxray.js";
-      script.className = "webxray";
-      script.setAttribute("data-lang", "en-US");
-      script.setAttribute("data-baseuri", "https://x-ray-goggles.mouse.org");
-      document.body.appendChild(script);
-    })();
-  }
+/// urun.js
+document.addEventListener("keydown", function (e) {
+	if (e.key == "~" && e.ctrlKey) {
+		var t = window.open("", "_blank", "width=500,height=300");
+		var e = t.document.createElement("iframe");
+		(e.src = "//raw.githubusercontent.com/Inglan2/uRun/main/popup.html"),
+			(e.style.cssText = "width:100%; height:100%; border:none;"),
+			t.document.body.appendChild(e),
+			t.document.title = "uRun",
+			t.addEventListener("message", function (e) {
+				e.data.toString().startsWith("execute:") && (eval(e.data.toString().replace("execute:", "")), t.close());
+			});
+	}
 });
