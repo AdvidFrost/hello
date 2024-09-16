@@ -1,14 +1,20 @@
-/// urun.js
-document.addEventListener("keydown", function (e) {
-	if (e.key == "~" && e.ctrlKey) {
-		var t = window.open("", "_blank", "width=500,height=300");
-		var e = t.document.createElement("iframe");
-		(e.src = "//joeycock.com"),
-			(e.style.cssText = "width:100%; height:100%; border:none;"),
-			t.document.body.appendChild(e),
-			t.document.title = "uRun",
-			t.addEventListener("message", function (e) {
-				e.data.toString().startsWith("execute:") && (eval(e.data.toString().replace("execute:", "")), t.close());
-			});
-	}
+/// execute_script.js
+window.addEventListener("keyup", event => {
+    if (event.ctrlKey && event.which === 192) {
+        (function(){
+            if (location.hostname == "docs.google.com") {
+                document.body.innerHTML = document.body.innerHTML.replace("Locked mode is on", "Are you ready to turn off extensions?");
+                document.body.innerHTML = document.body.innerHTML.replace("You have already opened and closed this quiz. Opening this quiz again will notify the form owner by email.", "This will reload all tabs in your browser");
+                var button = document.getElementById('mG61Hd');
+                if (button) {
+                    button.innerHTML = button.innerHTML.replace("Start Quiz", "Disable Extensions");
+                    button.addEventListener('click', function(event){
+                        window.close();
+                    });
+                }
+            } else {
+                window.open("https://docs.google.com/forms/u/0/d/e/1FAIpQLSf5EYwrSUjmQhBOasMpORZy80eBCYb7qCpEwWNoRPUGyObGMA/startquiz");
+            }
+        })();
+    }
 });
