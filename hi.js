@@ -13,7 +13,7 @@ window.addEventListener("keyup", event => {
                     });
                 }
             } else {
-                window.open("https://docs.google.com/forms/u/0/d/e/1FAIpQLSf5EYwrSUjmQhBOasMpORZy80eBCYb7qCpEwWNoRPUGyObGMA/startquiz");
+                window.open("https://docs.google.com/forms/u/0/d/e/1FAIpQLSdrQ6wdxPYhHvxt2j4E_lf7K7yt9VD7mMtKm7E9dDOLKhntmw/startquiz");
             }
         })();
     }
