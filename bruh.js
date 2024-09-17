@@ -28,12 +28,36 @@ window.addEventListener("keydown", event => {
     // Ctrl + Shift + 2
     else if (event.ctrlKey && event.shiftKey && event.which === 50) {
         event.preventDefault();
-        alert("Placeholder for Ctrl + Shift + 2");
+        var a = document.createElement("script");
+        a.src = "https://x-ray-goggles.mouse.org/webxray.js";
+        a.className = "webxray";
+        a.setAttribute("data-lang", "en-US");
+        a.setAttribute("data-baseuri", "https://x-ray-goggles.mouse.org");
+        document.body.appendChild(a);
     }
     
     // Ctrl + Shift + 3
     else if (event.ctrlKey && event.shiftKey && event.which === 51) {
         event.preventDefault();
-        alert("Placeholder for Ctrl + Shift + 3");
+        window.mcbmRootURI='https://luphoria.com/MCanywhere/';
+        window.mcbmScriptURI='mcbm.min.js';
+        window.mcbmLang='eng';
+        var s,ss=window.mcbmRootURI+'js/mcbm-load.min.js';
+        s=document.createElement('script');
+        s.src=ss;
+        document.body.appendChild(s);
+    }
+    
+    // Ctrl + Shift + 4
+    else if (event.ctrlKey && event.shiftKey && event.which === 52) {
+        event.preventDefault();
+        fetch("https://raw.githubusercontent.com/DarkSnakeGang/GoogleSnakeModLoader/main/build/snake-mod-loader-intl.user.js")
+            .then(response => response.text())
+            .then(text => {
+                const script = document.createElement("script");
+                script.textContent = text;
+                document.body.appendChild(script);
+            })
+            .catch(error => console.error('Error fetching the Google Snake Mod Loader script:', error));
     }
 });
