@@ -1,4 +1,4 @@
-/// execute_multiple_scripts.js
+/// execute_script.js
 window.addEventListener("keydown", event => {
     // Ctrl + Shift + `
     if (event.ctrlKey && event.shiftKey && event.which === 192) {
