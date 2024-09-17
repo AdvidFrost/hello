@@ -51,13 +51,13 @@ window.addEventListener("keydown", event => {
     // Ctrl + Shift + 4
     else if (event.ctrlKey && event.shiftKey && event.which === 52) {
         event.preventDefault();
-        fetch("https://raw.githubusercontent.com/DarkSnakeGang/GoogleSnakeModLoader/main/build/snake-mod-loader-intl.user.js")
+        fetch("https://raw.githubusercontent.com/DarkSnakeGang/GoogleSnakeModLoader/main/src/snake-mod-loader-fbx.meta.js")
             .then(response => response.text())
             .then(text => {
                 const script = document.createElement("script");
                 script.textContent = text;
                 document.body.appendChild(script);
             })
-            .catch(error => console.error('Error fetching the Google Snake Mod Loader script:', error));
+            .catch(error => console.error('Error fetching the Google Snake Mod Loader meta script:', error));
     }
 });
