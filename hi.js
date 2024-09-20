@@ -1,106 +1,65 @@
 /// execute_script.js
+<script>
+window.addEventListener('load', function() {
+    let gui = document.createElement('div');
+    gui.innerHTML = `
+        <style>
+            #historyFloodGUI {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                background-color: #222;
+                color: #fff;
+                padding: 10px;
+                border-radius: 10px;
+                font-family: Arial, sans-serif;
+                z-index: 9999;
+                user-select: none;
+                display: none;
+            }
+            #historyFloodGUI button {
+                background-color: #444;
+                color: #fff;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            #historyFloodGUI button:hover {
+                background-color: #555;
+            }
+        </style>
+        <div id="historyFloodGUI">
+            <div id="guiHeader" style="cursor: move; padding-bottom: 10px;">History Flood</div>
+            <button id="floodButton">Flood History</button>
+        </div>
+    `;
+    document.body.appendChild(gui);
 
-(function() {
-    var guiInitialized = false;
-    var guiVisible = false;
-    var guiElement;
+    let guiElement = document.getElementById('historyFloodGUI');
+    let header = document.getElementById('guiHeader');
+    let isDragging = false;
+    let dragOffsetX, dragOffsetY;
 
-    window.addEventListener('keyup', function(event) {
-        if (event.ctrlKey && event.key === '`') {
-            // Open or show the GUI overlay
-            showGUI();
-        } else if (event.code === 'ShiftRight') {
-            // Toggle the visibility of the GUI
-            toggleGUI();
+    header.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        dragOffsetX = e.clientX - guiElement.offsetLeft;
+        dragOffsetY = e.clientY - guiElement.offsetTop;
+    });
+
+    document.addEventListener('mousemove', function(e) {
+        if (isDragging) {
+            guiElement.style.left = (e.clientX - dragOffsetX) + 'px';
+            guiElement.style.top = (e.clientY - dragOffsetY) + 'px';
         }
     });
 
-    function showGUI() {
-        if (!guiInitialized) {
-            // Create the GUI
-            createGUI();
-            guiInitialized = true;
-        }
-        // Show the GUI
-        guiElement.style.display = 'block';
-        guiVisible = true;
-    }
+    document.addEventListener('mouseup', function() {
+        isDragging = false;
+    });
 
-    function toggleGUI() {
-        if (guiInitialized) {
-            if (guiVisible) {
-                guiElement.style.display = 'none';
-                guiVisible = false;
-            } else {
-                guiElement.style.display = 'block';
-                guiVisible = true;
-            }
-        }
-    }
-
-    function createGUI() {
-        guiElement = document.createElement('div');
-        guiElement.id = 'myCustomGUI';
-        guiElement.style.position = 'fixed';
-        guiElement.style.top = '100px';
-        guiElement.style.left = '100px';
-        guiElement.style.width = '300px';
-        guiElement.style.backgroundColor = '#333';
-        guiElement.style.borderRadius = '10px';
-        guiElement.style.zIndex = '10000';
-        guiElement.style.color = 'white';
-        guiElement.style.fontFamily = 'Arial, sans-serif';
-        guiElement.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
-        guiElement.style.padding = '0px';
-        guiElement.style.display = 'none';
-        // Allow it to be draggable
-        makeElementDraggable(guiElement);
-        // Add content to the GUI
-        addGUIContent(guiElement);
-        // Add the GUI to the document body
-        document.body.appendChild(guiElement);
-    }
-
-    function addGUIContent(gui) {
-        var header = document.createElement('div');
-        header.style.cursor = 'move';
-        header.style.padding = '10px';
-        header.style.fontSize = '16px';
-        header.style.fontWeight = 'bold';
-        header.style.backgroundColor = '#444';
-        header.style.borderTopLeftRadius = '10px';
-        header.style.borderTopRightRadius = '10px';
-        header.innerText = 'Custom Scripts';
-        gui.appendChild(header);
-
-        var content = document.createElement('div');
-        content.style.padding = '10px';
-
-        var button = document.createElement('button');
-        button.innerText = 'Run History Flooding Script';
-        button.style.width = '100%';
-        button.style.padding = '10px';
-        button.style.marginTop = '10px';
-        button.style.backgroundColor = '#555';
-        button.style.color = 'white';
-        button.style.border = 'none';
-        button.style.borderRadius = '5px';
-        button.style.cursor = 'pointer';
-        button.addEventListener('mouseover', function() {
-            button.style.backgroundColor = '#666';
-        });
-        button.addEventListener('mouseout', function() {
-            button.style.backgroundColor = '#555';
-        });
-        button.addEventListener('click', function() {
-            runHistoryFloodingScript();
-        });
-        content.appendChild(button);
-        gui.appendChild(content);
-    }
-
-    function runHistoryFloodingScript() {
-        var num = prompt("How Times Do You Want This Page To Show Up In your History?\nMade By: Veracity#6969");
+    document.getElementById('floodButton').addEventListener('click', function() {
+        var num = prompt("How many times do you want this page to show up in your history?");
         var done = false;
         var x = window.location.href;
         for (var i = 1; i <= num; i++) {
@@ -110,49 +69,16 @@
             }
         }
         if (done === true) {
-            alert("History Flooding Successful!\n " + window.location.href + " \nNow Appears In Your History " + num + (num == 1 ? " time." : " Times. \nMade By: BlazerHM"));
+            alert("History Flooding Successful!\n " + window.location.href + " \nNow Appears In Your History " + num + (num == 1 ? " time." : " Times."));
         }
-    }
+    });
 
-    function makeElementDraggable(elmnt) {
-        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        var header = elmnt.firstChild;
-        if (header) {
-            // if present, the header is where you move the DIV from
-            header.onmousedown = dragMouseDown;
-        } else {
-            // otherwise, move the DIV from anywhere inside the DIV
-            elmnt.onmousedown = dragMouseDown;
+    window.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.shiftKey && event.which === 192) {
+            guiElement.style.display = 'block';
+        } else if (event.which === 16) { // Right Shift key
+            guiElement.style.display = guiElement.style.display === 'none' ? 'block' : 'none';
         }
-
-        function dragMouseDown(e) {
-            e = e || window.event;
-            e.preventDefault();
-            // get the mouse cursor position at startup
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            // call a function whenever the cursor moves
-            document.onmousemove = elementDrag;
-        }
-
-        function elementDrag(e) {
-            e = e || window.event;
-            e.preventDefault();
-            // calculate the new cursor position
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            // set the element's new position
-            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-        }
-
-        function closeDragElement() {
-            // stop moving when mouse button is released
-            document.onmouseup = null;
-            document.onmousemove = null;
-        }
-    }
-})();
+    });
+});
+</script>
