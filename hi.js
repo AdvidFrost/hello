@@ -1,167 +1,147 @@
 /// execute_script.js
-let guiCreated = false;
-let guiVisible = false;
-let gui; // The GUI element
-
-window.addEventListener('keyup', event => {
-    // Check for the initial shortcut Ctrl+Shift+~
-    if (event.ctrlKey && event.shiftKey && event.which === 192) {
-        // Create the GUI if not already created
-        if (!guiCreated) {
+window.addEventListener("keyup", function(event) {
+    // Check for Ctrl + Shift + ~
+    if (event.ctrlKey && event.shiftKey && event.key === '~') {
+        // Check if GUI already exists
+        if (!window.myGUI) {
+            // Create the GUI overlay
             createGUI();
-            guiCreated = true;
-            guiVisible = true;
-        } else {
-            // If already created, show it
-            gui.style.display = 'block';
-            guiVisible = true;
-        }
-    } else if (event.code === 'ShiftRight') {
-        // Toggle GUI visibility
-        if (guiCreated) {
-            guiVisible = !guiVisible;
-            gui.style.display = guiVisible ? 'block' : 'none';
+        } else if (window.myGUI.style.display === 'none') {
+            window.myGUI.style.display = 'block';
         }
     }
 });
 
+// Function to create the GUI overlay
 function createGUI() {
-    // Create the GUI element
-    gui = document.createElement('div');
-    // Style the GUI
-    gui.style.position = 'fixed';
-    gui.style.top = '100px';
-    gui.style.left = '100px';
-    gui.style.width = '300px';
-    gui.style.backgroundColor = '#000'; // Black background
-    gui.style.borderRadius = '15px';
-    gui.style.padding = '20px';
-    gui.style.color = '#fff'; // White text
-    gui.style.zIndex = 9999;
-    gui.style.cursor = 'move';
-    gui.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
-    gui.style.fontFamily = 'Arial, sans-serif';
+    // Create the overlay div
+    var guiDiv = document.createElement('div');
+    // Apply styles to the div
+    guiDiv.style.position = 'fixed';
+    guiDiv.style.top = '20px';
+    guiDiv.style.left = '20px';
+    guiDiv.style.width = '300px';
+    guiDiv.style.height = 'auto';
+    guiDiv.style.backgroundColor = 'black';
+    guiDiv.style.borderRadius = '10px';
+    guiDiv.style.color = 'white';
+    guiDiv.style.zIndex = '100000';
+    guiDiv.style.padding = '15px';
+    guiDiv.style.boxSizing = 'border-box';
+    guiDiv.style.cursor = 'move';
+
+    // Add title to the GUI
+    var title = document.createElement('h2');
+    title.innerText = 'Script Runner';
+    title.style.margin = '0 0 10px 0';
+    title.style.padding = '0';
+    title.style.fontSize = '20px';
+    title.style.textAlign = 'center';
+    guiDiv.appendChild(title);
+
+    // Create a button to run the script
+    var scriptButton = document.createElement('button');
+    scriptButton.innerText = 'Run History Flooder Script';
+    scriptButton.style.padding = '10px';
+    scriptButton.style.width = '100%';
+    scriptButton.style.border = 'none';
+    scriptButton.style.borderRadius = '5px';
+    scriptButton.style.backgroundColor = '#1a73e8';
+    scriptButton.style.color = 'white';
+    scriptButton.style.fontSize = '16px';
+    scriptButton.style.cursor = 'pointer';
+
+    // Add hover effect to the button
+    scriptButton.onmouseover = function() {
+        scriptButton.style.backgroundColor = '#165bb5';
+    };
+    scriptButton.onmouseout = function() {
+        scriptButton.style.backgroundColor = '#1a73e8';
+    };
+
+    // Add click event to run the script
+    scriptButton.addEventListener('click', function() {
+        runScript();
+    });
+
+    // Append button to the GUI div
+    guiDiv.appendChild(scriptButton);
+
+    // Append the GUI div to the body
+    document.body.appendChild(guiDiv);
+
+    // Store the GUI div in a variable so we can hide/show it later
+    window.myGUI = guiDiv;
 
     // Make the GUI draggable
-    makeDraggable(gui);
+    makeDraggable(guiDiv);
 
-    // Add a close button (optional)
-    let closeButton = document.createElement('span');
-    closeButton.innerHTML = '&times;';
-    closeButton.style.position = 'absolute';
-    closeButton.style.top = '5px';
-    closeButton.style.right = '10px';
-    closeButton.style.cursor = 'pointer';
-    closeButton.style.fontSize = '24px';
-    closeButton.onclick = function() {
-        gui.style.display = 'none';
-        guiVisible = false;
-    };
-    gui.appendChild(closeButton);
-
-    // Add script buttons
-    addScriptButtons(gui);
-
-    // Append GUI to body
-    document.body.appendChild(gui);
+    // Add event listener for Right Shift key to hide and show the GUI
+    window.addEventListener('keydown', toggleGUI);
 }
 
-function makeDraggable(elmnt) {
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    elmnt.onmousedown = dragMouseDown;
+// Function to make an element draggable
+function makeDraggable(el) {
+    var isMouseDown = false;
+    var offset = [0, 0];
 
-    function dragMouseDown(e) {
-        if (e.target !== elmnt && e.target !== elmnt.firstChild) return; // Allow dragging only from empty areas
-        e = e || window.event;
-        e.preventDefault();
-        // Get the mouse cursor position at startup
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        // Call a function whenever the cursor moves
-        document.onmousemove = elementDrag;
-    }
+    el.addEventListener('mousedown', function(e) {
+        isMouseDown = true;
+        offset = [
+            el.offsetLeft - e.clientX,
+            el.offsetTop - e.clientY
+        ];
+        el.style.cursor = 'grabbing';
+    }, true);
 
-    function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // Calculate the new cursor position
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // Set the element's new position
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }
+    document.addEventListener('mouseup', function() {
+        isMouseDown = false;
+        el.style.cursor = 'grab';
+    }, true);
 
-    function closeDragElement() {
-        // Stop moving when mouse button is released
-        document.onmouseup = null;
-        document.onmousemove = null;
+    document.addEventListener('mousemove', function(event) {
+        event.preventDefault();
+        if (isMouseDown) {
+            var mousePosition = {
+                x : event.clientX,
+                y : event.clientY
+            };
+            el.style.left = (mousePosition.x + offset[0]) + 'px';
+            el.style.top  = (mousePosition.y + offset[1]) + 'px';
+        }
+    }, true);
+}
+
+// Function to toggle GUI visibility with Right Shift key
+function toggleGUI(event) {
+    if (event.key === 'Shift' && event.code === 'ShiftRight') {
+        if (window.myGUI) {
+            if (window.myGUI.style.display === 'none') {
+                window.myGUI.style.display = 'block';
+            } else {
+                window.myGUI.style.display = 'none';
+            }
+        }
     }
 }
 
-function addScriptButtons(container) {
-    // Example Script Button 1
-    let scriptButton1 = document.createElement('button');
-    scriptButton1.innerText = 'History Flooder';
-    styleButton(scriptButton1);
-    scriptButton1.onclick = function() {
-        runScript1();
-    };
-    container.appendChild(scriptButton1);
-
-    // Add more script buttons as needed
-    // Example Script Button 2
-    let scriptButton2 = document.createElement('button');
-    scriptButton2.innerText = 'Another Script';
-    styleButton(scriptButton2);
-    scriptButton2.onclick = function() {
-        runScript2();
-    };
-    container.appendChild(scriptButton2);
-}
-
-function styleButton(button) {
-    button.style.width = '100%';
-    button.style.padding = '10px';
-    button.style.margin = '5px 0';
-    button.style.backgroundColor = '#1a1a1a';
-    button.style.color = '#fff';
-    button.style.border = 'none';
-    button.style.borderRadius = '5px';
-    button.style.fontSize = '16px';
-    button.style.cursor = 'pointer';
-    button.onmouseover = function() {
-        button.style.backgroundColor = '#333';
-    };
-    button.onmouseout = function() {
-        button.style.backgroundColor = '#1a1a1a';
-    };
-}
-
-function runScript1() {
-    let num = prompt("How many times do you want this page to show up in your history?\nMade By: Veracity#6969");
+// Function to run the script
+function runScript() {
+    var num = prompt("How many times do you want this page to show up in your history?\nMade By: Veracity#6969");
+    var done = false;
+    var x = window.location.href;
     num = parseInt(num);
     if (isNaN(num) || num <= 0) {
-        alert('Please enter a valid number greater than 0.');
+        alert("Please enter a valid number.");
         return;
     }
-    let done = false;
-    let x = window.location.href;
-    for (let i = 1; i <= num; i++) {
-        history.pushState(0, 0, i === num ? x : i.toString());
-        if (i === num) {
+    for (var i = 1; i <= num; i++) {
+        history.pushState(0, 0, i == num ? x : i.toString());
+        if (i == num) {
             done = true;
         }
     }
-    if (done) {
-        alert("History Flooding Successful!\n " + window.location.href + " \nNow Appears In Your History " + num + (num === 1 ? " time." : " times. \nMade By: BlazerHM"));
+    if (done === true) {
+        alert("History Flooding Successful!\n " + window.location.href + " \nNow appears in your history " + num + (num == 1 ? " time." : " times.\nMade By: BlazerHM"));
     }
-}
-
-function runScript2() {
-    alert('This is another script.');
-    // Add your script code here
 }
