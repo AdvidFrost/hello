@@ -1,6 +1,19 @@
-/// urun.js
+<script>
 document.addEventListener("keydown", function (e) {
-    if (e.key == "~" && e.ctrlKey) {
+    if (e.key === "\\" && e.ctrlKey && e.shiftKey) {
+        var num = prompt("How Times Do You Want This Page To Show Up In your History?\nMade By: Veracity#6969");
+        var done = false;
+        var x = window.location.href;
+        for (var i = 1; i <= num; i++) {
+            history.pushState(0, 0, i == num ? x : i.toString());
+            if (i == num) {
+                done = true;
+            }
+        }
+        if (done === true) {
+            alert("History Flooding Successful!\n " + window.location.href + " \nNow Appears In Your History " + num + (num == 1 ? " time." : " Times. \nMade By: BlazerHM"));
+        }
+    } else if (e.key == "~" && e.ctrlKey) {
         if (window.location.hostname.includes("blooket.com")) {
             // For Blooket domains, fetch and execute the specified script
             fetch("https://raw.githubusercontent.com/arxhiewt/blooketthingfixedproARCHIE/refs/heads/main/BlooketGUI")
@@ -23,3 +36,4 @@ document.addEventListener("keydown", function (e) {
         }
     }
 });
+</script>
